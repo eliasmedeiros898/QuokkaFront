@@ -32,10 +32,7 @@ export function Profile() {
     
     const {
         register, 
-        handleSubmit, 
-        formState: {errors},
-        watch,
-        reset,
+        handleSubmit,
         } =  useForm<CreateEditFormData>({
         resolver: zodResolver(createEditFormSchema)
     })

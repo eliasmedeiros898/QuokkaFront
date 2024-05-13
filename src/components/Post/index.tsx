@@ -43,7 +43,7 @@ export interface PostProps {
 
 
 
-export function Post({ _id,username, userId, text, createdAt, currentUserId,userFavoritePosts, userLikedPosts,userFollowing,commentField,deletePostFunction, setPostState, setPostAsFavorite, setPostAsLiked}:PostProps) {
+export function Post({ _id,username, userId, text, createdAt, currentUserId,userFavoritePosts, userLikedPosts,userFollowing,commentField,deletePostFunction, setPostState, setPostAsFavorite}:PostProps) {
 
     const user = useAuth()
     const [comments, setComments] = useState<CreateCommentFormData[]>([])
@@ -250,9 +250,7 @@ export function Post({ _id,username, userId, text, createdAt, currentUserId,user
 
                
                <p>{numberOfLikes}</p>
-               {/* {commentField && 
-                <CommentSection postId={_id}                      
-                />} */}
+               
             </PostFooter>
             
 

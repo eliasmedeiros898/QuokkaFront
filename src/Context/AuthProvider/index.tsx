@@ -10,7 +10,6 @@ export const AuthContext = createContext<IContext>({} as IContext)
 export const AuthProvider = ({ children } : IAuthProvider) => {
     const [ user, setUser ] = useState<IUser | null>()
     const [username, setUsername] = useState<string>('')
-    //const [profilePicture, setProfilePicture] = useState<string>('')
     const [email, setEmail] = useState<string>('')
     const [userId, setUserId] = useState<string>('')
     const [followers, setFollowers] = useState<userId[]>([])
@@ -82,7 +81,7 @@ export const AuthProvider = ({ children } : IAuthProvider) => {
               Authorization: `Bearer ${token}` 
             }
           };
-        const response = await api.put(`/api/users/favorite`,data,config)
+        await api.put(`/api/users/favorite`,data,config)
         
         
     }
@@ -146,7 +145,7 @@ export const AuthProvider = ({ children } : IAuthProvider) => {
           }
         };
 
-        const response = await api.put("/api/users/following",data,config)
+        await api.put("/api/users/following",data,config)
     }
 
     async function getPostLikes(postID:string) {
