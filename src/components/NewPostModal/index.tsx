@@ -3,7 +3,7 @@ import { SubmitButton,CloseButton} from "../NewRegisterModal/styles";
 import { TextAreaPost, Title, Overlay, Content,  } from "./styles";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../hooks/useAuth";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction} from "react";
 import { X } from "phosphor-react";
 import { api } from "../../services/api";
 
@@ -12,13 +12,17 @@ interface NewPostProps {
     username: string
     text?: string
     isCode?: boolean
-    setPostState: React.Dispatch<React.SetStateAction<boolean>>;
+    setPostState: Dispatch<SetStateAction<boolean>>;
+    setOpenState: Dispatch<SetStateAction<boolean>>
 
 }
-export function NewPostModal({userId, username, setPostState}:NewPostProps){
+export function NewPostModal({userId, username, setPostState, setOpenState}:NewPostProps){
 
     const {register, handleSubmit,reset} = useForm<NewPostProps>()
+    
     const user = useAuth()
+
+    
     async function handleCreateNewPost(data: NewPostProps) {
         
             
@@ -38,6 +42,7 @@ export function NewPostModal({userId, username, setPostState}:NewPostProps){
                             }}
                         );
                         setPostState(false)
+                        setOpenState(false)
                         reset();
                             } catch (error) {
                                 console.error('Erro ao criar novo post:', error);
@@ -61,9 +66,10 @@ export function NewPostModal({userId, username, setPostState}:NewPostProps){
                             <X size={32}/>
                         </CloseButton>
                         <TextAreaPost 
-                            placeholder="O que quer compartilhar hoje?"
-                            {...register("text")}
-                        />
+                        placeholder="O que quer compartilhar hoje?"
+                        {...register("text")}
+                        
+                    />
                         <SubmitButton type="submit">Criar Post</SubmitButton>
                     </form>
                     

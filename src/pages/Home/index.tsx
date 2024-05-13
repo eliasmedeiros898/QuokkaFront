@@ -1,68 +1,95 @@
 
-import { Dialog } from "@radix-ui/themes"
+import { Box, Dialog, Tabs } from "@radix-ui/themes"
+import { Plus } from "phosphor-react"
+import { useEffect, useState } from "react"
 import { Header } from "../../components/Header"
+import { NewPostModal } from "../../components/NewPostModal"
 import { Post, PostProps } from "../../components/Post"
 import { SideProfile } from "../../components/SideProfile"
 import { useAuth } from "../../hooks/useAuth"
-import { CreateNewPostDiv, HomeContainer, OpenCreateNewPostButton, Posts, Wrapper } from "./styles"
-import { NewPostModal } from "../../components/NewPostModal"
-import { Plus } from "phosphor-react"
-import { useEffect, useState } from "react"
 import { api } from "../../services/api"
-import { useNavigate } from "react-router-dom"
+import { StyledTabTrigger } from "../Profile/styles"
+import { CreateNewPostDiv, HomeContainer, NotPostList, OpenCreateNewPostButton, Posts, Wrapper } from "./styles"
+
 
 
 
 export function Home() {
     
     const user = useAuth()
-    const navigate = useNavigate()
-
-    const [username, setUsername] = useState<string>('')
-    const [email, setEmail] = useState<string>('')
-    const [userId, setUserId] = useState<string>('')
-    const [followers, setFollowers] = useState<number>(0)
-    const [following, setFollowing] = useState<number>(0)
-
+    const [open, setOpen] = useState(false)
     const [posts, setPosts] = useState<PostProps[]>([])
+    const [followingPosts, setFollowingPosts] = useState<PostProps[]>([])
     const [postsLoaded, setPostsLoaded] = useState(false);
-    
-    
+    const [favoritePosts, setFavoritePosts] = useState<string[]>([])
+    const [likedPosts, setLikedPosts] = useState<string[]>([])
     
 
-    async function callUserInformations() {
+    
+
+
+    async function callFavoritePostsList(){
         if(user.access_token){
-           const userInfo = await user.getUserInfo(user.access_token)
-           setUserId(userInfo._id)
-           setUsername(userInfo.username)
-           setEmail(userInfo.email)
-           setFollowers(userInfo.followers.lenght)
-           setFollowing(userInfo.following.lenght)
-           
-           
+            const postsId = await user.getFavoritePostsId(user.access_token)
+            setFavoritePosts(postsId)
+        }
+    }
+
+    async function callLikedPostsList(){
+        if(user.access_token){
+            const postsId = await user.getLikedPosts(user.access_token)
+            setLikedPosts(postsId)
         }
     }
 
     async function callPostList(){
         const postList = await api.get('api/posts')
-        setPosts(postList.data)
+        setPosts(postList.data.reverse())
+        
+    }
+
+    async function callFollowingPostList() {
+        const config = {
+            headers: {
+              Authorization: `Bearer ${user.access_token}` 
+            },
+            data: {
+                userId : user.userId
+            }
+          };
+        const followingPostsId = await api.get('/api/users/following/posts',config)
+        const followingPostPromises = followingPostsId.data.map((postId: string) => user.getPostById(postId))
+        const postList = await Promise.all(followingPostPromises)
+        
+        setFollowingPosts(postList.reverse())
     }
 
     useEffect(() => {
-        callUserInformations()
+        const fetchData = async () => {
+            if(user.access_token){
+               user.getUserInfo(user.access_token) 
+            }
+        }
+        
+        
+
+        fetchData()
     }, [])
 
    
 
     useEffect(() => {
         if (!postsLoaded) {
+            callFavoritePostsList();
+            callLikedPostsList();
+            callFollowingPostList();
             callPostList();
             setPostsLoaded(true);
             }
     }, [postsLoaded]);
 
     
-        
+    
 
     async function handleDeletePost(postId:string, userId:string){
         const postIndex = posts.findIndex(post => post._id == postId)
@@ -79,8 +106,6 @@ export function Home() {
                     }
                 }
                 await api.delete(url, config)
-
-                alert('Post deletado!')
                 setPostsLoaded(false)
 
             }
@@ -97,42 +122,99 @@ export function Home() {
             <Header />
             <HomeContainer>
                 <SideProfile
-                    username={username}
-                    email={email}
-                    followers={followers}
-                    following={following}
+                    username={user.username }
+                    email={user.email}
+                    followers={user.followers }
+                    following={user.following }
                 />
+                <Tabs.Root defaultValue="allPosts">
+                    <Tabs.List color="cyan" size='2'>
+                        <StyledTabTrigger color='cyan'value="allPosts">Todos os posts</StyledTabTrigger>
+                        <StyledTabTrigger value="following">Seguindo</StyledTabTrigger>
+                        
+                    </Tabs.List>
 
-                <Posts>
-                    {posts.map(posts => {
-                        return(
-                                                    
-                            <Post 
-                                key={posts._id}
-                                username={posts.username}
-                                userId={posts.userId}
-                                createdAt={posts.createdAt}
-                                text={posts.text}   
-                                _id={posts._id}
-                                deletePostFunction={handleDeletePost}
-                                setPostState={setPostsLoaded}
-                                currentUserId={userId}
-                            />
+                    <Box pt="3">
+                        <Tabs.Content value="allPosts">
+                        <Posts>
+                            {posts.map(posts => {
+                                return(
+                                                            
+                                    <Post 
+                                        key={posts._id}
+                                        username={posts.username}
+                                        userId={posts.userId}
+                                        createdAt={posts.createdAt}
+                                        text={posts.text}   
+                                        _id={posts._id}
+                                        deletePostFunction={handleDeletePost}
+                                        setPostState={setPostsLoaded}
+                                        currentUserId={user.userId ?? ''}
+                                        setPostAsFavorite={(postId, userId) => user.setPostAsFavorite(user.access_token??'', postId, userId)}
+                                        userFavoritePosts={favoritePosts}
+                                        userFollowing={user.following?.map(userId => userId.toString())}
+                                        userLikedPosts={likedPosts}
+                                        setPostAsLiked={(postId: string,userId: string) => user.addLike(user.access_token??'', postId, userId)}
+                                        commentField={true}
+                                    />
 
-                         )
-                    })}
+                                )
+                            })}
                 </Posts>
+
+                        
+                        </Tabs.Content>
+
+                        <Tabs.Content value="following">
+                             {(followingPosts.length !== 0 ? followingPosts.map(posts => {
+                                return(                  
+                                        <Post 
+                                            key={posts._id}
+                                            username={posts.username}
+                                            userId={posts.userId}
+                                            createdAt={posts.createdAt}
+                                            text={posts.text}   
+                                            _id={posts._id}
+                                            deletePostFunction={handleDeletePost}
+                                            setPostState={setPostsLoaded}
+                                            currentUserId={user.userId ?? ''}
+                                            setPostAsFavorite={(postId, userId) => user.setPostAsFavorite(user.access_token??'', postId, userId)}
+                                            userFollowing={user.following?.map(userId => userId.toString())}
+                                            userFavoritePosts={favoritePosts}
+                                            userLikedPosts={likedPosts}
+                                            setPostAsLiked={(postId: string,userId: string) => user.addLike(user.access_token??'', postId, userId)}
+                                            commentField={true}
+                                        />
+
+                                    )
+                                }) 
+                                :
+                                
+                                <NotPostList>
+                                    Não existem Posts
+                                </NotPostList>
+                                
+                            )} 
+
+                                
+                            
+                        </Tabs.Content>
+                    </Box>
+                </Tabs.Root>
+
+                
                 
             </HomeContainer>
             <CreateNewPostDiv>  
-                <Dialog.Root>
+                <Dialog.Root open={open} onOpenChange={setOpen}>
                     <Dialog.Trigger>
                         <OpenCreateNewPostButton><Plus size={20}/></OpenCreateNewPostButton>
                     </Dialog.Trigger>
                     <NewPostModal 
-                        userId={userId}
-                        username={username}
+                        userId={user.userId ?? ''}
+                        username={user.username ?? ''}
                         setPostState={setPostsLoaded}
+                        setOpenState={setOpen}
                     />
                 </Dialog.Root>
             </CreateNewPostDiv>

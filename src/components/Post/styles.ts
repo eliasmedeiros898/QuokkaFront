@@ -1,3 +1,5 @@
+import { Button } from "@radix-ui/themes";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const PostContainer = styled.article`
@@ -26,13 +28,34 @@ export const PostContainer = styled.article`
 
 `
 
-export const Author = styled.div`
+export const InfoWrapper = styled.div`
     display: flex;
     align-items: center;
     gap: 1rem;
 
 `
+
+export const LinkDiv = styled(Link)`
+    text-decoration: none;
+    display: flex;
+    gap: 1rem;
+    cursor: pointer;
+
+`
+
+
+
+
+export const Author = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    gap: 1rem;
+
+`
 export const AuthorInfo = styled.div`
+    
     strong {
         display: block;
         color: ${props => props.theme['gray-100']};
@@ -136,3 +159,112 @@ export const DeleteButton = styled.button`
 
 
 `
+
+export const FavoriteButton = styled(Button)`
+    padding: 0.4rem;
+    background-color: ${props => props.theme['gray-900']};
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
+    
+    &:hover{
+        background-color: ${props => props.theme['blue-300']};
+    }
+
+`
+
+export const UnfavoriteButton = styled(Button)`
+    padding: 0.4rem;
+    background-color: ${props => props.theme['blue-300']};
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
+    
+    &:hover{
+        background-color: ${props => props.theme['gray-900']};
+    }
+
+
+`
+
+
+export const LikeButton = styled.button`
+    
+    background: transparent;
+    border: 1px solid red;
+    border: none;
+    color: ${props => props.theme['gray-100']} ;
+    transition: 0.2s;
+
+
+    
+
+
+    &:hover{
+        color: ${props => props.theme['blue-300']} ;
+    }
+`
+
+
+export const UnlikeButton = styled.button`
+    background: transparent;
+    border: none;
+    color: ${props => props.theme['blue-300']} ;
+    transition: 0.2s;
+
+    &:hover{
+        color: ${props => props.theme['gray-100']} ;
+    }
+`
+
+export const PostFooter = styled.footer`
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    
+    gap: 1rem;
+
+    p{
+        margin-top: 0.9rem;
+        color: ${props => props.theme['gray-100']};
+    }
+
+`
+
+
+export const FollowButton = styled.button`
+    font-size: 12px;
+    padding: 0.20rem 0.50rem;
+    margin-left: 2rem;
+    border-radius: 5px;
+    border: none;
+    background: ${props => props.theme['blue-300']};
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+
+    &:hover{
+        background: ${props => props.theme['blue-400']};
+    }
+
+`
+
+export const UnfollowButton = styled.button`
+    font-size: 12px;
+    padding: 0.25rem 0.75rem;
+    margin-left: 2rem;
+    border-radius: 5px;
+    border: none;
+    background: ${props => props.theme['gray-100']};
+    color: ${props => props.theme['gray-800']};
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+
+    &:hover{
+        background: ${props => props.theme['red-500']};
+    }
+
+`
+

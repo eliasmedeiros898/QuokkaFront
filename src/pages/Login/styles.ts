@@ -47,13 +47,15 @@ export const FormContainer = styled.form`
     display: flex;
     flex-direction: column;
     height: fit-content;
-    gap: 100px;
+    gap: 6rem;
     padding: 4rem 2.5rem;
     align-items: center;
     background: ${props => props.theme['gray-900']};
     border-radius: 8px;
     border: 3px double ${props => props.theme['blue-300']};
     box-shadow: -50px 50px 40px rgba(0, 0, 0, 0.5);
+    
+    
     
     
 
@@ -108,3 +110,14 @@ export const RegisterButton = styled.button`
 
 `
 
+export const FormError = styled.span`
+
+    color: ${props => props.theme['red-500']};
+    font-size: 12px;
+    margin-top: -5rem;
+    margin-bottom: -2rem;
+    
+    
+
+
+`

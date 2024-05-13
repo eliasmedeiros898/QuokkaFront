@@ -1,7 +1,6 @@
-import styled from 'styled-components';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
-import Button from 'react-bootstrap/Button';
+import styled from 'styled-components';
 
 export const HamburguerButton = styled(Dropdown.Toggle)`
     background: transparent;
@@ -23,6 +22,7 @@ export const DropdownMenu = styled(Dropdown.Menu)`
     background: ${props => props.theme['gray-600']};
     width: 4vw;
     height: 10vh;
+    z-index: 0;
     
 
 `
@@ -95,11 +95,22 @@ export const PreviousPost = styled.form`
 
 `
 
-export const EditButton = styled(Button)`
+export const EditButton = styled.button`
 
     margin-top: 8rem;
     width: 70%;
     height: 3rem;
+    background: ${props => props.theme['blue-300']};
+    border:  none;
+    color: white;
+    font-weight: bolder;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: 0.5s;
+    &:hover{
+        background: ${props => props.theme['blue-400']};
+    }
+    
 
 
 `

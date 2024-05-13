@@ -4,10 +4,15 @@ import styled from "styled-components";
 
 export const HeaderContainer = styled.header`
     background: ${props => props.theme['gray-700']};
+    position: sticky;
+    top: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 0;
+    z-index: 1;
+    opacity: 0.8;
+    backdrop-filter: blur(15px);
 
     strong {
         font-size: 2.5rem;

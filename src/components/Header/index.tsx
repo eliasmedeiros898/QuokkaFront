@@ -13,7 +13,7 @@ export function Header() {
         history('/')
     }
     return(
-        <HeaderContainer>
+        <HeaderContainer >
             <a href='/home'><Logo src={quokkaLogo} alt="" /></a>
             <strong>Quokka</strong>
             <button onClick={userLogout}>Sair</button>
