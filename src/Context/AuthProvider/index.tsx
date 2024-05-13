@@ -59,7 +59,7 @@ export const AuthProvider = ({ children } : IAuthProvider) => {
         
     }
 
-    async function updateUserInfo(token:string, userId:string, username?: string, profileImage?: string) {
+    async function updateUserInfo(token:string, userId:string, username?: string) {
         const config = {
             headers: {
               Authorization: `Bearer ${token}` 
